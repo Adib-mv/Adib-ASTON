@@ -1,0 +1,85 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Lesson_6_2 {
+    public static void main(String[] args) {
+        BasicPhoneDirectory phoneBook = new BasicPhoneDirectory();
+
+        System.out.println("== ДОБАВЛЕНИЕ ЗАПИСЕЙ ==\n");
+
+        phoneBook.add("Петров ИВАН", "+7-911-111-11-11");
+        phoneBook.add("Петров КИРИЛЛ", "+7-911-222-22-22");
+        phoneBook.add("Петров СЕМЕН", "+7-911-333-33-33");
+        System.out.println("Петров: добавлено 3 номера");
+
+        phoneBook.add("Семенов РОМАН", "+7-911-111-22-33");
+        phoneBook.add("Семенов АНТОН", "+7-911-444-55-11");
+        System.out.println("Семенов: добавлено 2 номера");
+
+        phoneBook.add("Корбут ДМИТРИЙ", "+7-911-777-88-88");
+        phoneBook.add("Корбут ИЛЬЯ", "+7-911-999-11-11");
+        System.out.println("Корбут: добавлено 2 номера");
+
+        phoneBook.add("Силов АРТЕМ", "+7-911-555-22-22");
+        System.out.println("Силов: добавлен 1 номер");
+
+        phoneBook.add("Смирнова ВИКТОРИЯ", "+7-911-111-11-22");
+        phoneBook.add("Смирнова ЛАДА", "+7-911-444-55-55");
+        phoneBook.add("Смирнова АННА", "+7-911-555-85-95");
+        System.out.println("Смирнова: добавлено 3 номера");
+
+        System.out.println("\n--- Проверка дубликата ---");
+        phoneBook.add("Петров ИВАН", "+7-911-111-11-11");
+        System.out.println("Попытка добавить дубликат для Петров ИВАН");
+
+        System.out.println("\n== СОДЕРЖИМОЕ СПРАВОЧНИКА ==");
+        phoneBook.printAll();
+
+        System.out.println("\n== ПОИСК ПО ФАМИЛИИ И ИМЕНИ ==");
+        System.out.println("Петров ИВАН: " + phoneBook.get("Петров ИВАН"));
+        System.out.println("Смирнова ВИКТОРИЯ: " + phoneBook.get("Смирнова ВИКТОРИЯ"));
+        System.out.println("Корбут ИЛЬЯ: " + phoneBook.get("Корбут ИЛЬЯ"));
+
+        System.out.println("Слепнев (нет в справочнике): " + phoneBook.get("Слепнев"));
+
+        System.out.println("\n== ДОБАВОЧНАЯ ИНФОРМАЦИЯ ==");
+        System.out.println("Всего контактов (уникальных фамилий): " + phoneBook.directory.size());
+
+        int totalPhones = 0;
+        for (List<String> phones : phoneBook.directory.values()) {
+            totalPhones += phones.size();
+        }
+        System.out.println("Всего номеров: " + totalPhones);
+
+    }
+
+    static class BasicPhoneDirectory {
+        private Map<String, List<String>> directory = new HashMap<>();
+
+        public void add(String surname, String phoneNumber) {
+            if (directory.containsKey(surname)) {
+                List<String> phones = directory.get(surname);
+                if (!phones.contains(phoneNumber)) { // избегаем дубликатов
+                    phones.add(phoneNumber);
+                }
+            } else {
+                List<String> phones = new ArrayList<>();
+                phones.add(phoneNumber);
+                directory.put(surname, phones);
+            }
+        }
+
+        public List<String> get(String surname) {
+            return directory.getOrDefault(surname, new ArrayList<>());
+        }
+
+        public void printAll() {
+            for (Map.Entry<String, List<String>> entry : directory.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        }
+    }
+}
+
