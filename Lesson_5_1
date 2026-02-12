@@ -1,0 +1,94 @@
+class MyArraySizeException extends Exception {
+    public MyArraySizeException(String message) {
+        super(message);
+    }
+}
+
+class MyArrayDataException extends Exception {
+    public MyArrayDataException(String message) {
+        super(message);
+    }
+}
+
+public class Lesson_5_1 {
+    public static int stringArray(String[][] array) throws MyArraySizeException, MyArrayDataException {
+        if (array.length != 4) {
+            throw new MyArraySizeException("Массив должен быть 4 строки, однако имеет " + array.length);
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].length != 4) {
+                throw new MyArraySizeException(
+                        "Строка " + i + " должна быть 4 столбца, однако имеет " + array[i].length
+                );
+            }
+        }
+
+        int sum = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                try {
+                    int value = Integer.parseInt(array[i][j]);
+                    sum += value;
+                } catch (NumberFormatException e) {
+                    throw new MyArrayDataException("Неверные данные ячейки [" + i + "][" + j + "]: '" + array[i][j] + "' не является целым числом");
+                }
+            }
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+
+        String[][] correctArray = {
+                {"1", "2", "3", "8"},
+                {"5", "6", "7", "8"},
+                {"9", "9", "10", "11"},
+                {"13", "14", "11", "20"}
+        };
+
+        String[][] wrongSizeArray = {
+                {"1", "2", "5"},
+                {"5", "5", "5"},
+                {"8", "8", "10"}
+        };
+
+        String[][] wrongDataArray = {
+                {"1", "2", "3", "4"},
+                {"5", "6", "семь", "8"},
+                {"9", "10", "11", "12"},
+                {"13", "14", "15", "16"}
+        };
+
+        System.out.println("Массив 4х4");
+        try {
+            int result = stringArray(correctArray);
+            System.out.println("Кол-во элементов: " + result);
+        } catch (MyArraySizeException e) {
+            System.out.println("Ошибка размера массива: " + e.getMessage());
+        } catch (MyArrayDataException e) {
+            System.out.println("Ошибка данных в массиве: " + e.getMessage());
+        }
+
+        System.out.println("\nМассив 3х3");
+        try {
+            int result = stringArray(wrongSizeArray);
+            System.out.println("Кол-во элементов: " + result);
+        } catch (MyArraySizeException e) {
+            System.out.println("Ошибка размера массива: " + e.getMessage());
+        } catch (MyArrayDataException e) {
+            System.out.println("Ошибка данных массива: " + e.getMessage());
+        }
+
+        System.out.println("\nМассив ");
+        try {
+            int result = stringArray(wrongDataArray);
+            System.out.println("Сумма элементов: " + result);
+        } catch (MyArraySizeException e) {
+            System.out.println("Ошибка размера массива: " + e.getMessage());
+        } catch (MyArrayDataException e) {
+            System.out.println("Ошибка данных массива: " + e.getMessage());
+        }
+    }
+}
